@@ -62,5 +62,26 @@ int main( int argc, char *argv[] )
     sigma = sqrt( sump / nrrand );
     sharpe = rm / sigma;
 
+    rm = trunc( rm * 1000.0 ) / 1000.0;
+    sigma = trunc( sigma * 1000.0 ) / 1000.0;
+    sharpe = trunc( sharpe * 1000.0 ) / 1000.0;
+
+    FILE *fout = fopen( argv[ 1 ], "w" );
+    if( fout == NULL )
+        return 1;
+
+    fprintf( fout, "%.3lf\n", rm );
+    fprintf( fout, "%.3lf\n", sigma );
+    fprintf( fout, "%.3lf\n", sharpe );
+    fclose( fout );
+
+    curr = head;
+    while( curr != NULL )
+    {
+        struct Node* temp = curr;
+        curr = curr->next;
+        free(temp);
+    }
+
     return 0;
 }
