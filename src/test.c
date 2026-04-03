@@ -8,17 +8,21 @@
         struct Node* next;
     };
 
-    int main( int argc, char *argv[] )
+    int main( int argc, const char *argv[] )
     {
         int n, i, nrrand = 0;
         double pret, sumrand = 0.0, rm, sump = 0.0, sharpe, sigma;
         struct Node *head = NULL, *tail = NULL;
 
         FILE *fin = fopen( argv[ 1 ], "r" );
-        fscanf( fin, "%d", &n );
-
-        if( n < 2 )
+        if( fin == NULL )
             return 1;
+
+        if( fscanf( fin, "%d", &n ) != 1 || n < 2 )
+        {
+            fclose(fin);
+            return 1;
+        }
 
         for( i = 0; i < n; i++ )
         {
@@ -40,7 +44,7 @@
                 }
         }
 
-        struct Node *prev = head;
+        struct Node const *prev = head;
         struct Node *curr = head->next;
 
         while( curr != NULL )
@@ -70,7 +74,10 @@
 
         FILE *fout = fopen( argv[ 2 ], "w" );
         if( fout == NULL )
+        {
+            fclose(fin);
             return 1;
+        }
 
         fprintf( fout, "%.3lf\n", rm );
         fprintf( fout, "%.3lf\n", sigma );
