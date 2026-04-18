@@ -29,4 +29,4 @@ queue *createqueue();
 void enqueue( queue *q, float v, int ziua, char *local );
 void dequeue( queue *q, float *v, int *ziua, char *local );
 void deletequeue( queue *q );
-nod citire( FILE *fin, char *locatie, nod **top );
+void citire( FILE *fin, char *locatie, nod **top );
