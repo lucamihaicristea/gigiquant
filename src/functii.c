@@ -1,86 +1,99 @@
-#include "interviu1.h"
+#include "interviu2.h"
 
-struct Node* citire( const char* fisier, int *n)
+void push( nod **top, float v )
 {
-    int i;
-    double pret;
-    FILE* fin = fopen( fisier, "r" );
-    if( fin == NULL )
-        return NULL;
+    nod *newnod = (nod*)malloc( sizeof( nod ) );
+    newnod->val = v;
+    newnod->next = *top;
+    *top = newnod;
+}
 
-    if( fscanf( fin, "%d", n ) != 1 || *n < 2 )
+float pop( nod **top )
+{
+    if( *top == NULL )
+        return -1;
+    nod *cop = *top;
+    float aux = (*top)->val;
+    *top = (*top)->next;
+    free( cop );
+    return aux;
+}
+
+void delete( nod **top )
+{
+    nod *temp;
+    while( *top != NULL )
+    {
+        temp = *top;
+        *top=(*top)->next;
+        free(temp);
+    }
+}
+
+void citire( FILE *fin, char *locatie, nod **top )
+{
+    *top = NULL;
+    float valo;
+    if( fscanf( fin, "%s", locatie ) != 1 )
     {
         fclose(fin);
+        return;
+    }
+    while( fscanf( fin, "%f", &valo) == 1 )
+    {
+        push( top, valo );
+    }
+}
+
+queue *createqueue()
+{
+    queue *q = (queue *)malloc( sizeof( queue ));
+    if( q == NULL )
         return NULL;
-    }
+    q->front=q->rear=NULL;
+    return q;
+}
 
-    struct Node *head = NULL, *tail = NULL;
-    for( i = 0; i < *n; i++)
-    {
-        fscanf( fin, "%lf", &pret );
-        struct Node* nod = ( struct Node* )malloc( sizeof( struct Node ) );
-        nod->val = pret;
-        nod->rand = 0.0;
-        nod->next = NULL;
-
-        if( head == NULL )
+void enqueue( queue *q, float v, int ziua, char *local )
+{
+    opor *newnod = ( opor*)malloc( sizeof( opor ) );
+    newnod->val = v;
+    newnod->zi = ziua;
+    strcpy( newnod->loc, local );
+    newnod->next = NULL;
+    if( q->rear == NULL )
+        q->rear = newnod;
+    else
         {
-            head = nod;
-            tail = nod;
+            q->rear->next = newnod;
+            q->rear = newnod;
         }
-        else 
-            {
-                tail->next = nod;
-                tail = nod;
-            }
-    }
-    fclose(fin);
-
-    return head;
+    if( q->front == NULL )
+        q->front=q->rear;
 }
 
-void calcul_rand( struct Node *head )
+void dequeue( queue *q, float *v, int *ziua, char *local )
 {
-    struct Node const *prev = head;
-    struct Node *curr = head->next;
-    while( curr != NULL )
+    if( q->front == NULL )
+        return;
+    opor *aux = q->front;
+    *v = q->front->val;
+    *ziua = q->front->zi;
+    strcpy( local, q->front->loc );
+    q->front = q->front->next;
+    if( q->front == NULL )
+        q->rear = NULL;
+    free(aux);
+}
+
+void deletequeue( queue *q )
+{
+    opor *aux;
+    while( q->front != NULL )
     {
-        curr->rand = ( curr->val - prev->val ) / prev->val;
-        prev = curr;
-        curr = curr->next;
+        aux = q->front;
+        q->front=q->front->next;
+        free(aux);
     }
-}
-
-double calcul_rm( struct Node *head, int nrrand )
-{
-    double sumrand = 0.0;
-    struct Node *curr = head;
-    while( curr != NULL )
-    {
-        sumrand = sumrand + curr->rand;
-        curr = curr->next;
-    }
-    return sumrand / nrrand;
-}
-
-double calcul_sigma( struct Node *head, double rm, int nrrand )
-{
-    double sump = 0.0;
-    struct Node *curr = head->next;
-    while( curr != NULL )
-    {            
-        sump = sump + ( curr->rand - rm ) * ( curr->rand - rm );
-        curr = curr->next;
-    }
-    return sqrt( sump / nrrand );
-}
-
-void freee( struct Node *head )
-{
-    while( head != NULL )
-    {
-        struct Node *temp = head;
-        head = head->next;
-        free( temp );
-    }
+    free(q);
 }
