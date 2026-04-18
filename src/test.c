@@ -2,9 +2,11 @@
 
 int main( int argc, const char *argv[] )
 {
-    nod *s1, *s2, *s3;
-    char loc1[ 20 ], loc2[ 20 ], loc3[ 20 ];
+    nod *s1 = NULL, *s2 = NULL, *s3 = NULL;
+    char loc1[ 20 ], loc2[ 20 ], loc3[ 20 ], loc[ 20 ];
     queue *q = createqueue();
+    int zi = 1, z;
+    float vl;
 
     FILE *fin = fopen( argv[ 1 ], "r" );
     if( fin == NULL )
@@ -20,12 +22,40 @@ int main( int argc, const char *argv[] )
         v1 = pop( &s1 );
         v2 = pop( &s2 );
         v3 = pop( &s3 );
-        if( p1 == p2 && p2 != p3 )
+        if( v1 == v2 && v2 != v3 )
         {
-            if( p2 > p3 )
+            enqueue( q, fabsf( v2 - v3 ), zi, loc3 );
         }
-
+        else if( v2 == v3 && v1 != v2 )
+            {
+                enqueue( q, fabsf( v1 - v2 ), zi, loc1 );
+            }
+            else if( v1 == v3 && v1 != v2 )
+                {
+                    enqueue( q, fabsf( v2 - v1 ), zi ,loc2 );
+                }
+        zi++;
     }
+    FILE *fout = fopen( argv[ 2 ], "w" );
+    if( fout == NULL )
+    {
+        delete( &s1 );
+        delete( &s2 );
+        delete( &s3 );
+        deletequeue( q );
+        return 1;
+    }
+    while( q->front != NULL )
+        {
+            dequeue( q, &vl, &z, loc );
+            fprintf( fout, "ziua %d - %.0f - %s\n", z, vl, loc );
+        }
+    fclose( fout );
+
+    delete( &s1 );
+    delete( &s2 );
+    delete( &s3 );
+    deletequeue( q );
 
     return 0;
 }

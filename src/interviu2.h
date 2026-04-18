@@ -28,4 +28,5 @@ void delete( nod **top );
 queue *createqueue();
 void enqueue( queue *q, float v );
 void dequeue( queue *q );
+void deletequeue( queue *q );
 nod citire( const char* fisier, char *locatie, nod **top );
