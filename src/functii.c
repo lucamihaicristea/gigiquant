@@ -32,12 +32,13 @@ void delete( nod **top )
 
 void citire( FILE *fin, char *locatie, nod **top )
 {
+    char lin[ 40 ];
     *top = NULL;
     float valo;
-    if( fscanf( fin, "%s", locatie ) != 1 )
+    if( fgets( lin, sizeof( lin ), fin ) )
     {
-        fclose(fin);
-        return;
+        lin[ strlen( lin ) - 1 ]= '\0';
+        strcpy( locatie, lin );
     }
     while( fscanf( fin, "%f", &valo) == 1 )
     {
