@@ -20,6 +20,7 @@ int main( int argc, const char *argv[] )
         double rm, sigma, sharpe;
         struct Node *head = citire1( fin, n );
         nrrand = n - 1;
+        fclose( fin );
 
         calcul_rand( head );
         rm = calcul_rm( head, nrrand );
@@ -44,62 +45,77 @@ int main( int argc, const char *argv[] )
         freee( head );
         fclose( fout );
     }
-    else
+    else if ( strchr( primalin, ',' ) != NULL )
         {
-            nod *s1 = NULL, *s2 = NULL, *s3 = NULL;
-        char loc1[ 20 ], loc2[ 20 ], loc3[ 20 ], loc[ 20 ];
-        queue *q = createqueue();
-        int zi = 1, z;
-        float vl;
-        
-        citire2( fin, loc1, &s1 );
-        citire2( fin, loc2, &s2 );
-        citire2( fin, loc3, &s3 );
-        fclose( fin );
-        while( s1 != NULL && s2 != NULL && s3 != NULL )
-        {
-            float v1, v2, v3;
-            v1 = pop( &s1 );
-            v2 = pop( &s2 );
-            v3 = pop( &s3 );
-            if( v1 == -1 || v2 == -1 || v3 == -1 )
-                break;
+            TreeNode *root = NULL;
+            TreeNode *poz[ 10 ];
+            creare_arbore( fin, &root, poz );
+            fclose( fin );
 
-            if( v1 == v2 && v2 != v3 )
-            {
-                enqueue( q, fabsf( v2 - v3 ), zi, loc3 );
-            }
-            else if( v2 == v3 && v1 != v2 )
-            {
-                enqueue( q, fabsf( v1 - v2 ), zi, loc1 );
-            }
-            else if( v1 == v3 && v1 != v2 )
-            {
-                enqueue( q, fabsf( v2 - v1 ), zi ,loc2 );
-            }
-            zi++;
-        }
-        FILE *fout = fopen( argv[ 2 ], "w" );
-        if( fout == NULL )
-        {
-            delete( &s1 );
-            delete( &s2 );
-            delete( &s3 );
-            deletequeue( q );
-            return 1;
-        }
-        while( q->front != NULL )
-        {
-            dequeue( q, &vl, &z, loc );
-            fprintf( fout, "ziua %d - %.2f - %s\n", z, vl, loc );
-        }
-        fclose( fout );
+            FILE *fout = fopen( argv[ 2 ], "w" );
+            if( fout == NULL )
+                return 1;
+            oglindite( root, fout );
 
-        delete( &s1 );
-        delete( &s2 );
-        delete( &s3 );
-        deletequeue( q );
+            fclose( fout );
+            free_arbore( root );
         }
+        else
+            {
+                nod *s1 = NULL, *s2 = NULL, *s3 = NULL;
+                char loc1[ 20 ], loc2[ 20 ], loc3[ 20 ], loc[ 20 ];
+                queue *q = createqueue();
+                int zi = 1, z;
+                float vl;
+                
+                citire2( fin, loc1, &s1 );
+                citire2( fin, loc2, &s2 );
+                citire2( fin, loc3, &s3 );
+                fclose( fin );
+                while( s1 != NULL && s2 != NULL && s3 != NULL )
+                {
+                    float v1, v2, v3;
+                    v1 = pop( &s1 );
+                    v2 = pop( &s2 );
+                    v3 = pop( &s3 );
+                    if( v1 == -1 || v2 == -1 || v3 == -1 )
+                        break;
+
+                    if( v1 == v2 && v2 != v3 )
+                    {
+                        enqueue( q, fabsf( v2 - v3 ), zi, loc3 );
+                    }
+                    else if( v2 == v3 && v1 != v2 )
+                    {
+                        enqueue( q, fabsf( v1 - v2 ), zi, loc1 );
+                    }
+                    else if( v1 == v3 && v1 != v2 )
+                    {
+                        enqueue( q, fabsf( v2 - v1 ), zi ,loc2 );
+                    }
+                    zi++;
+                }
+                FILE *fout = fopen( argv[ 2 ], "w" );
+                if( fout == NULL )
+                {
+                    delete( &s1 );
+                    delete( &s2 );
+                    delete( &s3 );
+                    deletequeue( q );
+                    return 1;
+                }
+                while( q->front != NULL )
+                {
+                    dequeue( q, &vl, &z, loc );
+                    fprintf( fout, "ziua %d - %.2f - %s\n", z, vl, loc );
+                }
+                fclose( fout );
+
+                delete( &s1 );
+                delete( &s2 );
+                delete( &s3 );
+                deletequeue( q );
+            }
 
     return 0;
 }
