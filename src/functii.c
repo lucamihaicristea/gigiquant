@@ -177,12 +177,14 @@ void deletequeue( queue *q )
     free(q);
 }
 
-void insert( StockList **head, const char stock[] )
+static void insert( StockList **head, const char stock[] )
 {
     StockList *aux = *head;
     StockList *new = (StockList*)malloc( sizeof( StockList ));
-
-    strcpy( new->symbol, stock );
+    if( new == NULL )
+        return;
+    strncpy( new->symbol, stock, 9 );
+    new->symbol[ 9 ] = '\0';
     new->next = NULL;
     if( *head == NULL )
         *head = new;
@@ -194,13 +196,15 @@ void insert( StockList **head, const char stock[] )
         }
 }
 
-TreeNode *calibrare_nod( TreeNode *root, int d )
+static TreeNode *calibrare_nod( TreeNode *root, int d )
 {
     if( d == 1 )
     {
         if( root->left == NULL )
         {
             root->left = (TreeNode*)malloc(sizeof(TreeNode));
+            if( root->left == NULL )
+                return NULL;
             root->left->left = NULL;
             root->left->right = NULL;
             root->left->stocks = NULL;
@@ -212,6 +216,8 @@ TreeNode *calibrare_nod( TreeNode *root, int d )
             if( root->right == NULL )
             {
                 root->right = (TreeNode*)malloc(sizeof(TreeNode));
+                if( root->right == NULL )
+                    return NULL;
                 root->right->left = NULL;
                 root->right->right = NULL;
                 root->right->stocks = NULL;
@@ -224,6 +230,8 @@ TreeNode *calibrare_nod( TreeNode *root, int d )
 void creare_arbore(FILE *fin, TreeNode **root, TreeNode *poz[ 10 ] ) 
 {
     *root = (TreeNode*)malloc(sizeof(TreeNode));
+    if(*root == NULL )
+        return;
     (*root)->stocks = NULL;
     (*root)->left = NULL;
     (*root)->right = NULL;
@@ -288,7 +296,7 @@ void creare_arbore(FILE *fin, TreeNode **root, TreeNode *poz[ 10 ] )
     }
 }
 
-int transformare( int nr )
+static int transformare( int nr )
 {
     int x = 0, p = 1;
     while( nr != 0 )
@@ -300,14 +308,16 @@ int transformare( int nr )
     return x;
 }
 
-void oglindite( TreeNode *root, FILE *fout )
+void oglindite( const TreeNode *root, FILE *fout )
 {
-    StockList *initial = root->stocks;
+    if( root == NULL )
+        return;
+    const StockList *initial = root->stocks;
     int p = 1;
     while( initial != NULL )
     {
         int tras = transformare( initial->traseu );
-        StockList *cautare = initial->next;
+        const StockList *cautare = initial->next;
         while( cautare != NULL )
         {
             if( tras == cautare->traseu )
@@ -325,12 +335,11 @@ void oglindite( TreeNode *root, FILE *fout )
 
 }
 
-void free_lista( StockList *head )
+static void free_lista( StockList *head )
 {
-    StockList *aux;
     while( head != NULL )
     {
-        aux = head;
+        StockList *aux = head;
         head = head->next;
         free(aux);
     }

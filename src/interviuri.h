@@ -56,10 +56,6 @@ typedef struct TreeNode {
     struct TreeNode *right;
 } TreeNode;
 
-void insert( StockList **head, const char stock[] );
-TreeNode *calibrare_nod( TreeNode *root, int d );
 void creare_arbore( FILE *fin, TreeNode **root, TreeNode *poz[ 10 ] );
-int transformare( int nr );
-void oglindite( TreeNode *root, FILE *fout );
-void free_lista( StockList *head );
+void oglindite( const TreeNode *root, FILE *fout );
 void free_arbore( TreeNode *root );
