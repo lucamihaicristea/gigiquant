@@ -177,10 +177,11 @@ void deletequeue( queue *q )
     free(q);
 }
 
-void insert( StockList **head, char stock[] )
+void insert( StockList **head, const char stock[] )
 {
     StockList *aux = *head;
     StockList *new = (StockList*)malloc( sizeof( StockList ));
+
     strcpy( new->symbol, stock );
     new->next = NULL;
     if( *head == NULL )
@@ -302,6 +303,7 @@ int transformare( int nr )
 void oglindite( TreeNode *root, FILE *fout )
 {
     StockList *initial = root->stocks;
+    int p = 1;
     while( initial != NULL )
     {
         int tras = transformare( initial->traseu );
@@ -309,11 +311,18 @@ void oglindite( TreeNode *root, FILE *fout )
         while( cautare != NULL )
         {
             if( tras == cautare->traseu )
-                fprintf( fout, "%s-%s\n", initial->symbol, cautare->symbol );
+            {
+                if( p == 0 )
+                    fprintf( fout, "\n" );
+                
+                fprintf( fout, "%s-%s", initial->symbol, cautare->symbol );
+                p = 0;
+            }
             cautare=cautare->next;
         }
         initial = initial->next;
     }
+
 }
 
 void free_lista( StockList *head )

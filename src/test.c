@@ -54,7 +54,10 @@ int main( int argc, const char *argv[] )
 
             FILE *fout = fopen( argv[ 2 ], "w" );
             if( fout == NULL )
+            {
+                free_arbore( root );
                 return 1;
+            }
             oglindite( root, fout );
 
             fclose( fout );

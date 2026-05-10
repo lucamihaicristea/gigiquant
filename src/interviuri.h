@@ -44,7 +44,7 @@ void deletequeue( queue *q );
 void citire2( FILE *fin, char *locatie, nod **top );
 
 typedef struct StockList {
-    char symbol[ 5 ];
+    char symbol[ 10 ];
     float val; //pretul din ziua precedenta, care va fi actualizat la fiecare zi
     int traseu; //traseul pe care il face stock ul in arbore, pentru a gasi mai usor oglinditul
     struct StockList *next;
@@ -56,7 +56,7 @@ typedef struct TreeNode {
     struct TreeNode *right;
 } TreeNode;
 
-void insert( StockList **head, char stock[] );
+void insert( StockList **head, const char stock[] );
 TreeNode *calibrare_nod( TreeNode *root, int d );
 void creare_arbore( FILE *fin, TreeNode **root, TreeNode *poz[ 10 ] );
 int transformare( int nr );
