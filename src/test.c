@@ -21,9 +21,10 @@ int main( int argc, const char *argv[] )
         float temp;
         while( fscanf( fin, "%f", &temp ) == 1 )
             cnt++;
-        fseek( fin, 0, SEEK_SET);
+        fseek( fin, 0, SEEK_SET );
         if( cnt == n )
         {
+            fscanf( fin, "%d", &n );
             double rm, sigma, sharpe;
             struct Node *head = citire1( fin, n );
             nrrand = n - 1;
@@ -62,7 +63,7 @@ int main( int argc, const char *argv[] )
                 }
                 int n, k, minim, maxim, nr;
                 float d, pstart, ptarget;
-                int *v = secv( fin, &n, &d, &pstart, &ptarget, &minim, &maxim, &k);
+                int *v = secv( fin, &n, &d, &minim, &maxim, &pstart, &ptarget, &k);
                 frac **map = mat_tranzitie( v, n, d, minim, maxim, &nr);
                 probabilitati( fout, map, nr, k, pstart, ptarget, d, minim );
                 eliberare( v, map, nr );

@@ -474,12 +474,12 @@ void probabilitati( FILE *fout, frac **map, int nr, int k, float pstart, float p
 
     prob[ pst ].precedent.numarator = 1;
     if( prob[ pta ].precedent.numarator == 0 && prob[ pta ].precedent.numitor == 1 )
-        printf( "0\n");
+        fprintf( fout, "0\n");
     else if( prob[ pta ].precedent.numarator == prob[ pta ].precedent.numitor )
-            printf( "1\n");
+            fprintf( fout, "1\n");
         else
             {
-                printf( "%d/%d\n", prob[ pta ].precedent.numarator, prob[ pta ].precedent.numitor);
+                fprintf( fout, "%d/%d\n", prob[ pta ].precedent.numarator, prob[ pta ].precedent.numitor);
             }
     
     for( int z = 1; z < k; z++ )
@@ -504,14 +504,18 @@ void probabilitati( FILE *fout, frac **map, int nr, int k, float pstart, float p
 
         }
         if( prob[ pta ].precedent.numarator == 0 && prob[ pta ].precedent.numitor == 1 )
-            printf( "0\n");
+            fprintf( fout, "0");
         else if( prob[ pta ].precedent.numarator == prob[ pta ].precedent.numitor )
-                printf( "1\n");
+                fprintf( fout, "1");
             else
                 {
-                    printf( "%d/%d\n", prob[ pta ].precedent.numarator, prob[ pta ].precedent.numitor);
+                    fprintf( fout, "%d/%d", prob[ pta ].precedent.numarator, prob[ pta ].precedent.numitor);
                 }
-    }        
+        if( z != k - 1 )
+            fprintf( fout, "\n" );
+    }
+
+    free( prob );      
 }
 
 void eliberare( int *v, frac **map, int nr )
