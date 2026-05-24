@@ -15,7 +15,7 @@ int main( int argc, const char *argv[] )
 
     if( primalin[ 0 ] >= '0' && primalin[ 0 ] <= '9' )
     {
-        int n, nrrand;
+        int n;
         fscanf( fin, "%d", &n );
         int cnt = 0;
         float temp;
@@ -27,7 +27,7 @@ int main( int argc, const char *argv[] )
             fscanf( fin, "%d", &n );
             double rm, sigma, sharpe;
             struct Node *head = citire1( fin, n );
-            nrrand = n - 1;
+            int nrrand = n - 1;
             fclose( fin );
     
             calcul_rand( head );
@@ -61,7 +61,7 @@ int main( int argc, const char *argv[] )
                     fclose( fin );
                     return 1;
                 }
-                int n, k, minim, maxim, nr;
+                int k, minim, maxim, nr;
                 float d, pstart, ptarget;
                 int *v = secv( fin, &n, &d, &minim, &maxim, &pstart, &ptarget, &k);
                 frac **map = mat_tranzitie( v, n, d, minim, maxim, &nr);

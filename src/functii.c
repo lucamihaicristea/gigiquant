@@ -356,7 +356,7 @@ void free_arbore( TreeNode *root )
     free( root );
 }
 
-int cmmdc( int a, int b )
+static int cmmdc( int a, int b )
 {
     while( b != 0 )
     {
@@ -367,14 +367,14 @@ int cmmdc( int a, int b )
     return a;
 }
 
-void simplificare( frac *f )
+static void simplificare( frac *f )
 {
     int d = cmmdc( f->numarator, f->numitor );
     f->numarator  = f->numarator / d;
     f->numitor  = f->numitor / d;
 }
 
-frac inmultire( frac a, frac b )
+static frac inmultire( frac a, frac b )
 {
     frac c;
     c.numarator = a.numarator * b.numarator;
@@ -383,7 +383,7 @@ frac inmultire( frac a, frac b )
     return c;
 }
 
-frac adunare( frac a, frac b )
+static frac adunare( frac a, frac b )
 {
     frac c;
     c.numarator = a.numarator * b.numitor + b.numarator * a.numitor;
@@ -401,6 +401,8 @@ int *secv( FILE *fin, int *n, float *d, int *minim, int *maxim, float *pstart, f
     fscanf( fin, "%f", ptarget );
 
     int *v = (int*)malloc( (*n) * sizeof( int));
+    if( v == NULL )
+        return NULL;
     *minim = 999999999;
     *maxim = 0;
     for( int i = 0; i < *n; i++ )
@@ -417,14 +419,18 @@ int *secv( FILE *fin, int *n, float *d, int *minim, int *maxim, float *pstart, f
     return v;
 }
 
-frac **mat_tranzitie( int *v, int n, float d, int minim, int maxim, int *nr)
+frac **mat_tranzitie( const int *v, int n, float d, int minim, int maxim, int *nr)
 {
     int i, j;
     *nr = ( maxim - minim ) / (int)(d) + 1;
     frac **map = (frac**)malloc( (*nr) * sizeof( frac*));
+    if( map == NULL )
+        return NULL;
     for( i = 0; i < (*nr); i++ )
     {
         map[ i ] = (frac*)malloc( (*nr) * sizeof( frac ) );
+        if( map[ i ] == NULL )
+            return NULL;
         for( j = 0; j < (*nr); j++ )
         {
             map[ i ][ j ].numarator = 0;
@@ -433,6 +439,8 @@ frac **mat_tranzitie( int *v, int n, float d, int minim, int maxim, int *nr)
     }
 
     int *iesiri = calloc( (*nr), sizeof( int ));
+    if( iesiri == NULL )
+        return NULL;
     for( i = 0; i < n - 1; i++ )
     {
         int a = ( v[ i ] - minim ) / (int)d;
@@ -463,7 +471,19 @@ void probabilitati( FILE *fout, frac **map, int nr, int k, float pstart, float p
     int pst = ((int)(pstart/d)* (int)d - minim) / (int)d;
     int pta = ((int)(ptarget/d)* (int)d - minim) / (int)d;
 
-    stare *prob = (stare*)malloc( nr * sizeof( stare));
+    int ok1, ok2;
+    if( pst >= 0 && pst < nr )
+        ok1 = 1;
+    else
+        ok1 = 0;
+    if( pta >= 0 && pta < nr )
+            ok2 = 1;
+        else
+            ok2 = 0;
+
+    stare *prob = (stare*)calloc( nr, sizeof( stare));
+    if( prob == NULL )
+        return;
     for( i = 0; i < nr; i++ )
     {
         prob[ i ].precedent.numarator = 0;
@@ -471,46 +491,63 @@ void probabilitati( FILE *fout, frac **map, int nr, int k, float pstart, float p
         prob[ i ].curent.numarator = 0;
         prob[ i ].curent.numitor = 1;
     }
-
-    prob[ pst ].precedent.numarator = 1;
-    if( prob[ pta ].precedent.numarator == 0 && prob[ pta ].precedent.numitor == 1 )
-        fprintf( fout, "0\n");
-    else if( prob[ pta ].precedent.numarator == prob[ pta ].precedent.numitor )
-            fprintf( fout, "1\n");
-        else
-            {
-                fprintf( fout, "%d/%d\n", prob[ pta ].precedent.numarator, prob[ pta ].precedent.numitor);
-            }
+    if( ok1 == 1 )
+        prob[ pst ].precedent.numarator = 1;
     
-    for( int z = 1; z < k; z++ )
+    int a = 0;
+    int b = 1;
+    if( ok1 && ok2 )
     {
-        for( i = 0; i < nr; i++ )
+        a = prob[ pta ].precedent.numarator;
+        b = prob[ pta ].precedent.numitor;
+    }
+    if( !ok1 || !ok2 || a == 0 )
+        fprintf( fout, "0\n" );
+    else if( a == b )
+        fprintf( fout, "1\n");
+    else
+        fprintf(fout, "%d/%d\n", a, b );
+
+    for( int z = 1; z < k; z++ )
+    {   
+        if( ok1 == 1 )
         {
-            if( prob[ i ].precedent.numarator > 0 )
+
+            for( i = 0; i < nr; i++ )
             {
-                for( j = 0; j < nr; j++ )
-                    if( map[ i ][ j ].numarator > 0 )
-                        {
-                            frac tran = inmultire( prob[ i ].precedent, map[ i ][ j ] );
-                            prob[ j ].curent = adunare( prob[ j ].curent, tran );
-                        }
+                if( prob[ i ].precedent.numarator > 0 )
+                {
+                    for( j = 0; j < nr; j++ )
+                        if( map[ i ][ j ].numarator > 0 )
+                            {
+                                frac tran = inmultire( prob[ i ].precedent, map[ i ][ j ] );
+                                prob[ j ].curent = adunare( prob[ j ].curent, tran );
+                            }
+                }
+            }
+            for( i = 0; i < nr; i++ )
+            {
+                prob[ i ].precedent = prob[ i ].curent;
+                prob[ i ].curent.numarator = 0;
+                prob[ i ].curent.numitor = 1;
+    
             }
         }
-        for( i = 0; i < nr; i++ )
+        
+        a = 0;
+        b = 1;
+        if( ok1 && ok2 )
         {
-            prob[ i ].precedent = prob[ i ].curent;
-            prob[ i ].curent.numarator = 0;
-            prob[ i ].curent.numitor = 1;
-
+            a = prob[ pta ].precedent.numarator;
+            b = prob[ pta ].precedent.numitor;
         }
-        if( prob[ pta ].precedent.numarator == 0 && prob[ pta ].precedent.numitor == 1 )
-            fprintf( fout, "0");
-        else if( prob[ pta ].precedent.numarator == prob[ pta ].precedent.numitor )
-                fprintf( fout, "1");
-            else
-                {
-                    fprintf( fout, "%d/%d", prob[ pta ].precedent.numarator, prob[ pta ].precedent.numitor);
-                }
+        if( !ok1 || !ok2 || a == 0 )
+            fprintf( fout, "0" );
+        else if( a == b )
+            fprintf( fout, "1");
+        else
+            fprintf(fout, "%d/%d", a, b );
+
         if( z != k - 1 )
             fprintf( fout, "\n" );
     }
