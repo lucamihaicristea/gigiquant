@@ -9,11 +9,12 @@ int main( int argc, const char *argv[] )
     if( fin == NULL )
         return 1;
 
+    // citirea primei linii pentru a deduce care dintre task uri trebuie rezolvat
     char primalin[ 100 ];
     fgets( primalin, sizeof( primalin), fin );
     fseek( fin, 0, SEEK_SET);
 
-    if( primalin[ 0 ] >= '0' && primalin[ 0 ] <= '9' )
+    if( primalin[ 0 ] >= '0' && primalin[ 0 ] <= '9' ) // daca prima linie incepe cu o cifra, este fie task ul 1 sau 4
     {
         int n;
         fscanf( fin, "%d", &n );
@@ -71,7 +72,7 @@ int main( int argc, const char *argv[] )
                 fclose( fout );
             }
     }
-    else if ( strchr( primalin, ',' ) != NULL )
+    else if ( strchr( primalin, ',' ) != NULL ) // daca prima linie contine o virgula ( listari de nume de actiuni ) => task 3
         {
             TreeNode *root = NULL;
             TreeNode *poz[ 10 ];
@@ -89,7 +90,7 @@ int main( int argc, const char *argv[] )
             fclose( fout );
             free_arbore( root );
         }
-        else
+        else // daca nu s a indeplinit nicio conditie, se ajunge la task 2
             {
                 nod *s1 = NULL, *s2 = NULL, *s3 = NULL;
                 char loc1[ 20 ], loc2[ 20 ], loc3[ 20 ], loc[ 20 ];

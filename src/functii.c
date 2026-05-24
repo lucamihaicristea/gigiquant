@@ -1,5 +1,6 @@
 #include "interviuri.h"
 
+// citeste 'n' preturi din fisier si salveaza intr o lista
 struct Node* citire1( FILE *fin, int n )
 {
     int i;
@@ -30,6 +31,7 @@ struct Node* citire1( FILE *fin, int n )
     return head;
 }
 
+// calculeaza randamentul pentru fiecare zi
 void calcul_rand( struct Node *head )
 {
     struct Node const *prev = head;
@@ -42,6 +44,7 @@ void calcul_rand( struct Node *head )
     }
 }
 
+// calculeaza randamentul mediu
 double calcul_rm( const struct Node *head, int nrrand )
 {
     double sumrand = 0.0;
@@ -54,18 +57,20 @@ double calcul_rm( const struct Node *head, int nrrand )
     return sumrand / nrrand;
 }
 
+// calculeaza deviatia standard
 double calcul_sigma( const struct Node *head, double rm, int nrrand )
 {
     double sump = 0.0;
     const struct Node *curr = head->next;
     while( curr != NULL )
     {            
-        sump = sump + ( curr->rand - rm ) * ( curr->rand - rm );
+        sump = sump + ( curr->rand - rm ) * ( curr->rand - rm ); // suma patratelor diferentelor dintre pret si medie
         curr = curr->next;
     }
     return sqrt( sump / nrrand );
 }
 
+// elibereaza memoria alocata
 void freee( struct Node *head )
 {
     while( head != NULL )
@@ -76,6 +81,7 @@ void freee( struct Node *head )
     }
 }
 
+// push pret in stiva
 static void push( nod **top, float v )
 {
     nod *newnod = (nod*)malloc( sizeof( nod ) );
@@ -86,6 +92,7 @@ static void push( nod **top, float v )
     *top = newnod;
 }
 
+// pop pret din stiva
 float pop( nod **top )
 {
     if( *top == NULL )
@@ -97,6 +104,7 @@ float pop( nod **top )
     return aux;
 }
 
+// elibereaza memoria alocata stivei
 void delete( nod **top )
 {
     while( *top != NULL )
@@ -107,6 +115,7 @@ void delete( nod **top )
     }
 }
 
+// citeste locatia si preturile si le pune intr o stiva
 void citire2( FILE *fin, char *locatie, nod **top )
 {
     char lin[ 40 ];
@@ -123,6 +132,7 @@ void citire2( FILE *fin, char *locatie, nod **top )
     }
 }
 
+// creare coada
 queue *createqueue()
 {
     queue *q = (queue *)malloc( sizeof( queue ));
@@ -132,6 +142,7 @@ queue *createqueue()
     return q;
 }
 
+// adaugare oportunitate in coada
 void enqueue( queue *q, float v, int ziua, const char *local )
 {
     opor *newnod = ( opor*)malloc( sizeof( opor ) );
@@ -152,6 +163,7 @@ void enqueue( queue *q, float v, int ziua, const char *local )
         q->front=q->rear;
 }
 
+// extragerea oportunitatii din coada
 void dequeue( queue *q, float *v, int *ziua, char *local )
 {
     if( q->front == NULL )
@@ -166,6 +178,7 @@ void dequeue( queue *q, float *v, int *ziua, char *local )
     free(aux);
 }
 
+// elibereaza memoria alocata cozii
 void deletequeue( queue *q )
 {
     while( q->front != NULL )
@@ -177,6 +190,7 @@ void deletequeue( queue *q )
     free(q);
 }
 
+// adaugarea unei noi actiuni in lista unui nod din arbore
 static void insert( StockList **head, const char stock[] )
 {
     StockList *aux = *head;
@@ -196,6 +210,7 @@ static void insert( StockList **head, const char stock[] )
         }
 }
 
+// crearea ramurii 
 static TreeNode *calibrare_nod( TreeNode *root, int d )
 {
     if( d == 1 )
@@ -227,6 +242,7 @@ static TreeNode *calibrare_nod( TreeNode *root, int d )
     return NULL;
 }
 
+// crearea arborelui in functie de preturile actiunilor in timp
 void creare_arbore(FILE *fin, TreeNode **root, TreeNode *poz[ 10 ] ) 
 {
     *root = (TreeNode*)malloc(sizeof(TreeNode));
@@ -237,6 +253,7 @@ void creare_arbore(FILE *fin, TreeNode **root, TreeNode *poz[ 10 ] )
     (*root)->right = NULL;
     char nume_stockuri[ 100 ];
     fgets( nume_stockuri, sizeof( nume_stockuri ), fin );
+    //separam numele actiunilor
     char *p = strtok( nume_stockuri, ",\n" );
     while( p != NULL )
     {
@@ -244,7 +261,7 @@ void creare_arbore(FILE *fin, TreeNode **root, TreeNode *poz[ 10 ] )
         p = strtok( NULL, ",\n" );
     }
     float pret;
-    int ok = 0;
+    int ok = 0; //flag prima zi
     while( fscanf( fin, "%f,", &pret ) == 1 )
     {
         if( ok == 0 )
@@ -266,6 +283,7 @@ void creare_arbore(FILE *fin, TreeNode **root, TreeNode *poz[ 10 ] )
         }
         else
             {
+                //calculam drumul actiunilor prin arbore
                 StockList *curr = (*root)->stocks;
                 int d;
                 if( curr->val > pret )
@@ -278,6 +296,7 @@ void creare_arbore(FILE *fin, TreeNode **root, TreeNode *poz[ 10 ] )
                 curr->val = pret;
                 insert( &(poz[0]->stocks), curr->symbol );
                 curr = curr->next;
+                // repetam operatia pentru toate celelalte actiuni
                 for( int i = 1; i < 10; i++ )
                 {
                     fscanf( fin, "%f,", &pret );
@@ -296,6 +315,7 @@ void creare_arbore(FILE *fin, TreeNode **root, TreeNode *poz[ 10 ] )
     }
 }
 
+// simetricul unui traseu
 static int transformare( int nr )
 {
     int x = 0, p = 1;
@@ -308,6 +328,7 @@ static int transformare( int nr )
     return x;
 }
 
+// gaseste si afiseaza perechile de actiuni care au evoluat in mod perfect invers
 void oglindite( const TreeNode *root, FILE *fout )
 {
     if( root == NULL )
@@ -335,6 +356,7 @@ void oglindite( const TreeNode *root, FILE *fout )
 
 }
 
+// eliberare lista de actiuni
 static void free_lista( StockList *head )
 {
     while( head != NULL )
@@ -345,6 +367,7 @@ static void free_lista( StockList *head )
     }
 }
 
+// eliberare arbore post-ordine
 void free_arbore( TreeNode *root )
 {
     if( root == NULL )
@@ -356,6 +379,7 @@ void free_arbore( TreeNode *root )
     free( root );
 }
 
+// cel mai mare divizor comun
 static int cmmdc( int a, int b )
 {
     while( b != 0 )
@@ -367,6 +391,7 @@ static int cmmdc( int a, int b )
     return a;
 }
 
+// aducerea la fractie ireductibila
 static void simplificare( frac *f )
 {
     int d = cmmdc( f->numarator, f->numitor );
@@ -374,6 +399,7 @@ static void simplificare( frac *f )
     f->numitor  = f->numitor / d;
 }
 
+// inmulteste doua fractii
 static frac inmultire( frac a, frac b )
 {
     frac c;
@@ -383,6 +409,7 @@ static frac inmultire( frac a, frac b )
     return c;
 }
 
+// aduna doua fractii
 static frac adunare( frac a, frac b )
 {
     frac c;
@@ -392,6 +419,7 @@ static frac adunare( frac a, frac b )
     return c;
 }
 
+//citeste si grupeaza preturile in intervale
 int *secv( FILE *fin, int *n, float *d, int *minim, int *maxim, float *pstart, float *ptarget, int *k)
 {
     fscanf( fin, "%d", n );
@@ -409,7 +437,7 @@ int *secv( FILE *fin, int *n, float *d, int *minim, int *maxim, float *pstart, f
     {
         float x;
         fscanf( fin, "%f", &x );
-        int y = (int)( x / (*d))*(int)(*d);
+        int y = (int)( x / (*d))*(int)(*d); // transformarea in int
         v[ i ] = y;
         if( y > *maxim )
             *maxim = y;
@@ -419,10 +447,11 @@ int *secv( FILE *fin, int *n, float *d, int *minim, int *maxim, float *pstart, f
     return v;
 }
 
+// crearea matricei de tranzitie a starilor
 frac **mat_tranzitie( const int *v, int n, float d, int minim, int maxim, int *nr)
 {
     int i, j;
-    *nr = ( maxim - minim ) / (int)(d) + 1;
+    *nr = ( maxim - minim ) / (int)(d) + 1; // nr total de stari
     frac **map = (frac**)malloc( (*nr) * sizeof( frac*));
     if( map == NULL )
         return NULL;
@@ -438,17 +467,18 @@ frac **mat_tranzitie( const int *v, int n, float d, int minim, int maxim, int *n
         }
     }
 
-    int *iesiri = calloc( (*nr), sizeof( int ));
+    int *iesiri = calloc( (*nr), sizeof( int )); // calculam cate iesire eista din fiecare stare
     if( iesiri == NULL )
         return NULL;
     for( i = 0; i < n - 1; i++ )
     {
-        int a = ( v[ i ] - minim ) / (int)d;
-        int m = ( v[ i + 1 ] - minim ) / (int)d;
-        map[ a ][ m ].numarator += 1;
-        iesiri[ a ] += 1;
+        int a = ( v[ i ] - minim ) / (int)d; // stare azi
+        int m = ( v[ i + 1 ] - minim ) / (int)d; // stare maine
+        map[ a ][ m ].numarator += 1; // intrari in acel nod 
+        iesiri[ a ] += 1; // total iesiri nod
     }
 
+    // transformam intrarile in fractii
     for( i = 0; i < (*nr); i++ )
     {
         if( iesiri[ i ] > 0 )
@@ -456,7 +486,7 @@ frac **mat_tranzitie( const int *v, int n, float d, int minim, int maxim, int *n
             {
                 if( map[ i ][ j ].numarator > 0 )
                     {
-                        map[ i ][ j ].numitor = iesiri[ i ];
+                        map[ i ][ j ].numitor = iesiri[ i ]; // intrari din nodul i in j / nr total iesiri
                         simplificare( &map[ i ][ j ] );
                     }
             }
@@ -465,9 +495,11 @@ frac **mat_tranzitie( const int *v, int n, float d, int minim, int maxim, int *n
     return map;
 }
 
+// aflarea probabilitatii atingerii unui pret tinta
 void probabilitati( FILE *fout, frac **map, int nr, int k, float pstart, float ptarget, float d, int minim )
 {
     int i, j;
+    // index start si target
     int pst = ((int)(pstart/d)* (int)d - minim) / (int)d;
     int pta = ((int)(ptarget/d)* (int)d - minim) / (int)d;
 
@@ -480,7 +512,7 @@ void probabilitati( FILE *fout, frac **map, int nr, int k, float pstart, float p
             ok2 = 1;
         else
             ok2 = 0;
-
+    //vector cu stari curente si precedente pentru fiecare zi
     stare *prob = (stare*)calloc( nr, sizeof( stare));
     if( prob == NULL )
         return;
@@ -492,7 +524,7 @@ void probabilitati( FILE *fout, frac **map, int nr, int k, float pstart, float p
         prob[ i ].curent.numitor = 1;
     }
     if( ok1 == 1 )
-        prob[ pst ].precedent.numarator = 1;
+        prob[ pst ].precedent.numarator = 1; // probabilitatea starii initiale 1
     
     int a = 0;
     int b = 1;
@@ -508,6 +540,7 @@ void probabilitati( FILE *fout, frac **map, int nr, int k, float pstart, float p
     else
         fprintf(fout, "%d/%d\n", a, b );
 
+    // k zile
     for( int z = 1; z < k; z++ )
     {   
         if( ok1 == 1 )
@@ -525,6 +558,7 @@ void probabilitati( FILE *fout, frac **map, int nr, int k, float pstart, float p
                             }
                 }
             }
+            // pregatim starea precedenta pentru urmatoarea zi
             for( i = 0; i < nr; i++ )
             {
                 prob[ i ].precedent = prob[ i ].curent;
@@ -534,6 +568,7 @@ void probabilitati( FILE *fout, frac **map, int nr, int k, float pstart, float p
             }
         }
         
+        // afisarea probabilitatii target
         a = 0;
         b = 1;
         if( ok1 && ok2 )
@@ -555,6 +590,7 @@ void probabilitati( FILE *fout, frac **map, int nr, int k, float pstart, float p
     free( prob );      
 }
 
+// eliberare matrice de tranzitii si vectorul ce continea secventa
 void eliberare( int *v, frac **map, int nr )
 {
     free( v );

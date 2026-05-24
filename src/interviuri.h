@@ -3,9 +3,10 @@
 #include <string.h>
 #include <math.h>
 
+// task 1
 struct Node {
-    double val;
-    double rand;     
+    double val; //pretul actiunii
+    double rand; //randamentul
     struct Node* next;
 };
 
@@ -15,11 +16,12 @@ void calcul_rand( struct Node *head );
 double calcul_rm( const struct Node *head, int nrrand );
 double calcul_sigma( const struct Node *head, double rm, int nrrand );
 
-struct nod{
+// task 2
+struct nod{ 
     float val;
     struct nod *next;
 };
-typedef struct nod nod;
+typedef struct nod nod; //structura pentru stiva 
 
 struct opor{
     float val;
@@ -28,7 +30,7 @@ struct opor{
     struct opor *next;
 };
 typedef struct opor opor;
-
+// structura pentru coada
 struct Q{
     opor *front, *rear;
 };
@@ -43,6 +45,7 @@ void dequeue( queue *q, float *v, int *ziua, char *local );
 void deletequeue( queue *q );
 void citire2( FILE *fin, char *locatie, nod **top );
 
+// task 3
 typedef struct StockList {
     char symbol[ 10 ];
     float val; //pretul din ziua precedenta, care va fi actualizat la fiecare zi
@@ -51,24 +54,25 @@ typedef struct StockList {
 } StockList;
 
 typedef struct TreeNode {
-    StockList *stocks;
+    StockList *stocks; // lista de actiuni la fiecare nod
     struct TreeNode *left;
     struct TreeNode *right;
-} TreeNode;
+} TreeNode; // structura pentru arbore
 
 void creare_arbore( FILE *fin, TreeNode **root, TreeNode *poz[ 10 ] );
 void oglindite( const TreeNode *root, FILE *fout );
 void free_arbore( TreeNode *root );
 
+// task 4
 typedef struct{
     int numarator;
     int numitor;
-}frac;
+}frac; // structura pentru fractie
 
 typedef struct{
     frac precedent;
     frac curent;
-}stare;
+}stare; // structura pentru starea curenta si cea precedenta
 
 int *secv( FILE *fin, int *n, float *d, int *minim, int *maxim, float *pstart, float *ptarget, int *k);
 frac **mat_tranzitie( const int *v, int n, float d, int minim, int maxim, int *nr);
