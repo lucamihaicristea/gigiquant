@@ -17,33 +17,58 @@ int main( int argc, const char *argv[] )
     {
         int n, nrrand;
         fscanf( fin, "%d", &n );
-        double rm, sigma, sharpe;
-        struct Node *head = citire1( fin, n );
-        nrrand = n - 1;
-        fclose( fin );
-
-        calcul_rand( head );
-        rm = calcul_rm( head, nrrand );
-        sigma = calcul_sigma( head, rm, nrrand );
-        sharpe = rm / sigma;
-
-        rm = trunc( rm * 1000.0 ) / 1000.0;
-        sigma = trunc( sigma * 1000.0 ) / 1000.0;
-        sharpe = trunc( sharpe * 1000.0 ) / 1000.0;
-
-        FILE *fout = fopen( argv[ 2 ], "w" );
-        if( fout == NULL )
+        int cnt = 0;
+        float temp;
+        while( fscanf( fin, "%f", &temp ) == 1 )
+            cnt++;
+        fseek( fin, 0, SEEK_SET);
+        if( cnt == n )
         {
+            double rm, sigma, sharpe;
+            struct Node *head = citire1( fin, n );
+            nrrand = n - 1;
+            fclose( fin );
+    
+            calcul_rand( head );
+            rm = calcul_rm( head, nrrand );
+            sigma = calcul_sigma( head, rm, nrrand );
+            sharpe = rm / sigma;
+    
+            rm = trunc( rm * 1000.0 ) / 1000.0;
+            sigma = trunc( sigma * 1000.0 ) / 1000.0;
+            sharpe = trunc( sharpe * 1000.0 ) / 1000.0;
+    
+            FILE *fout = fopen( argv[ 2 ], "w" );
+            if( fout == NULL )
+            {
+                freee( head );
+                return 1;
+            }
+    
+            fprintf( fout, "%.3lf\n", rm );
+            fprintf( fout, "%.3lf\n", sigma );
+            fprintf( fout, "%.3lf\n", sharpe );
+                
             freee( head );
-            return 1;
+            fclose( fout );
         }
-
-        fprintf( fout, "%.3lf\n", rm );
-        fprintf( fout, "%.3lf\n", sigma );
-        fprintf( fout, "%.3lf\n", sharpe );
-            
-        freee( head );
-        fclose( fout );
+        else
+            {
+                FILE *fout = fopen( argv[ 2 ], "w" );
+                if( fout == NULL )
+                {
+                    fclose( fin );
+                    return 1;
+                }
+                int n, k, minim, maxim, nr;
+                float d, pstart, ptarget;
+                int *v = secv( fin, &n, &d, &pstart, &ptarget, &minim, &maxim, &k);
+                frac **map = mat_tranzitie( v, n, d, minim, maxim, &nr);
+                probabilitati( fout, map, nr, k, pstart, ptarget, d, minim );
+                eliberare( v, map, nr );
+                fclose( fin );
+                fclose( fout );
+            }
     }
     else if ( strchr( primalin, ',' ) != NULL )
         {

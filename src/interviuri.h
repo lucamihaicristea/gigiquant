@@ -59,3 +59,22 @@ typedef struct TreeNode {
 void creare_arbore( FILE *fin, TreeNode **root, TreeNode *poz[ 10 ] );
 void oglindite( const TreeNode *root, FILE *fout );
 void free_arbore( TreeNode *root );
+
+typedef struct{
+    int numarator;
+    int numitor;
+}frac;
+
+typedef struct{
+    frac precedent;
+    frac curent;
+}stare;
+
+int cmmdc( int a, int b );
+void simplificare( frac *f );
+frac inmultire( frac a, frac b );
+frac adunare( frac a, frac b);
+int *secv( FILE *fin, int *n, float *d, int *minim, int *maxim, float *pstart, float *ptarget, int *k);
+frac **mat_tranzitie( int *v, int n, float d, int minim, int maxim, int *nr);
+void probabilitati( FILE *fout, frac **map, int nr, int k, float pstart, float ptarger, float d, int minim );
+void eliberare( int *v, frac **map, int nr );
