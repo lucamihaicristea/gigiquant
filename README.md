@@ -13,7 +13,10 @@ Scopul aplicației este de a dezvolta algoritmi pentru a rezolva diferite proble
 ## Structura Proiectului
 
 * 'src/': Conține codurile sursa( '.c' și '.h' ).
-* 'în/': Seturile de date de intrare pentru testare.
+    * 'interviuri.h': Header-ul principal al proiectului. Definește structurile și prototipurile tuturor funcțiilor.
+    * 'functii.c': Implementarea efectiva a logicii algoritmilor. Conține toate funcțiile.
+    * 'test.c': Main-ul.
+* 'in/': Seturile de date de intrare pentru testare.
 * 'ref/': Fișierele de referință pentru verificarea corectitudinii.
 * 'Makefile': Scriptul pentru compilarea și gestionarea proiectului.
 * 'config.json' / 'tests.json': Fișierele necesare rulării checker-ului.
@@ -23,11 +26,11 @@ Scopul aplicației este de a dezvolta algoritmi pentru a rezolva diferite proble
 
 ### Structuri de Date si Algoritmi Utilizati
 
-Pentru implementarea eficienta a modulelor financiare, am utilizat urmatoarele:
-* **Liste inlantuite**
+Pentru implementarea eficienta a modulelor financiare, am utilizat următoarele:
+* **Liste înlănțuite**
 * **Stive / Cozi**
 * **Arbori binari**
-* **Grafuri orientate si liste de adiacenta**
+* **Grafuri orientate**
 * **Structuri personalizate ('struct')**
 
 ---
