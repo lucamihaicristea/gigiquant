@@ -1,6 +1,6 @@
 # GigiQuant — Portfolio Manager
 
-This project was developed for the **Proiectarea Algoritmilor* course at the **Facultatea de Automatica si Calculatoare** (National University of Science and Technology POLITEHNICA Bucharest).
+This project was developed for the **Proiectarea Algoritmilor** course at the **Facultatea de Automatica si Calculatoare** (UPB).
 
 The primary goal of the application is to implement efficient algorithms to solve quantitative finance problems, including performance metrics calculation, arbitrage detection, portfolio optimization, and probabilistic price modeling.
 
