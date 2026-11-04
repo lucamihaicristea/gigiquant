@@ -1,44 +1,63 @@
-# Manager de portofoliu la GigiQuant
+# GigiQuant — Portfolio Manager
 
-Acest proiect a fost dezvoltat în cadrul cursului de **Proiectarea Algoritmilor**, la **Facultatea de Automatica și Calculatoare**, domeniul **AIASI**, anul universitar 2025-2026. 
+This project was developed for the **Proiectarea Algoritmilor* course at the **Facultatea de Automatica si Calculatoare** (National University of Science and Technology POLITEHNICA Bucharest).
 
-Scopul aplicației este de a dezvolta algoritmi pentru a rezolva diferite probleme din domeniul financiar:
-* calculul **indicatorul Sharpe Ratio**
-* identificarea oportunităților de **arbitraj**
-* **optimizarea** de portofoliu
-* determinarea **probabilității** că o acțiune să aibă un preț după un număr de zile
+The primary goal of the application is to implement efficient algorithms to solve quantitative finance problems, including performance metrics calculation, arbitrage detection, portfolio optimization, and probabilistic price modeling.
 
 ---
 
-## Structura Proiectului
+## Features & Core Functionality
 
-* 'src/': Conține codurile sursa( '.c' și '.h' ).
-    * 'interviuri.h': Header-ul principal al proiectului. Definește structurile și prototipurile tuturor funcțiilor.
-    * 'functii.c': Implementarea efectiva a logicii algoritmilor. Conține toate funcțiile.
-    * 'test.c': Main-ul.
-* 'in/': Seturile de date de intrare pentru testare.
-* 'ref/': Fișierele de referință pentru verificarea corectitudinii.
-* 'Makefile': Scriptul pentru compilarea și gestionarea proiectului.
-* 'config.json' / 'tests.json': Fișierele necesare rulării checker-ului.
-* 'ProiectPA_GigiQ.pdf': Pdf-ul ce conține cerințele.
+- **Sharpe Ratio Calculation:** Evaluates risk-adjusted returns for financial assets and portfolios.
+- **Arbitrage Opportunity Detection:** Identifies execution paths for arbitrage opportunities across exchange rates.
+- **Portfolio Optimization:** Determines optimal asset allocation based on defined constraints.
+- **Stock Price Probability Modeling:** Predicts price distributions over a given time horizon.
 
 ---
 
-### Structuri de Date si Algoritmi Utilizati
+## Data Structures & Algorithms Used
 
-Pentru implementarea eficienta a modulelor financiare, am utilizat următoarele:
-* **Liste înlănțuite**
-* **Stive / Cozi**
-* **Arbori binari**
-* **Grafuri orientate**
-* **Structuri personalizate ('struct')**
+To ensure computational efficiency, the project incorporates:
+- **Graphs (Directed Graphs):** Used for modeling exchange pairs and pathfinding.
+- **Binary Trees & Custom Structs:** For structured data manipulation and fast lookups.
+- **LinkedLists, Stacks & Queues:** Core primitives for data flow and internal state management.
 
 ---
 
-#### Cum se instalează și rulează
+## Repository Structure
 
-1. Se download-eaza directory-ul.
-2. Se instleaza [checker-ul](https://gitlab.cs.pub.ro/paaa/checker/-/releases)-Linux AMD64 Binary și se adaugă în folderul salvat.
-3. Se deschide un terminal ( este nevoie de [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) ) și se navighează până în folderul proiectului.
-4. Se instalează valgrind și cppcheck ( sudo apt install valgrind, sudo apt install cppcheck) și se oferă drept de execuție checker -ului: chmod +x ./nume checker.
-5. Se rulează checker-ul ./nume checker.
+```text
+├── src/
+│   ├── interviuri.h      # Main header file (data structures & function prototypes)
+│   ├── functii.c         # Core algorithm implementations
+│   └── test.c            # Driver code / main entry point
+├── in/                   # Input datasets for evaluation
+├── ref/                  # Reference outputs for validation
+├── Makefile              # Build automation script
+└── config.json           # Test runner configurations
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+The project is built for Linux environments. On Windows, use **WSL** (Windows Subsystem for Linux).
+
+Install the required verification tools:
+```bash
+sudo apt update && sudo apt install valgrind cppcheck -y
+```
+### Building and Running Tests
+1. Clone the repository:
+```bash
+git clone [https://github.com/lucamihaicristea/gigiquant.git](https://github.com/lucamihaicristea/gigiquant.git)
+cd gigiquant
+```
+
+2. Make the checker executable and run it:
+```bash
+chmod +x ./checker
+./checker
+```
